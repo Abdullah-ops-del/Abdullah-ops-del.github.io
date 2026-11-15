@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pip Journal | Abdullah Shah</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700&family=Unbounded:wght@700&display=swap" rel="stylesheet">
+<style>
+:root{--cyan:#35f0ff;--pink:#ff8a2b;--violet:#8b5cff;--line:rgba(140,130,255,.25);--panel:rgba(22,20,56,.7);--text:#ebeaff;--muted:#a09ecb;--win:#3dffa2}
+*{box-sizing:border-box;margin:0}
+body{background:radial-gradient(900px 600px at 85% -10%,#3b1c0c,transparent 60%),#0a0a1f;color:var(--text);font:1rem/1.6 Manrope,system-ui,sans-serif;min-height:100vh;padding:28px clamp(16px,4vw,48px)}
+.wrap{max-width:980px;margin:auto}
+a{color:var(--cyan)}
+h1{font:700 clamp(1.6rem,4vw,2.4rem) Unbounded,sans-serif;margin:10px 0 6px}
+.sub{color:var(--muted);margin-bottom:24px;max-width:60ch}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:18px}
+form{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;align-items:end}
+label{display:grid;gap:4px;font-size:.85rem;color:var(--muted)}
+input,select{background:#12113a;border:1px solid var(--line);border-radius:10px;padding:10px;color:var(--text);font:inherit}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+button{padding:11px 18px;border:0;border-radius:99px;font:700 1rem Manrope,sans-serif;cursor:pointer;background:linear-gradient(100deg,var(--cyan),var(--violet));color:#07071a}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px}
+.stat b{display:block;font:700 1.5rem Unbounded,sans-serif}
+.stat span{color:var(--muted);font-size:.85rem}
+svg{width:100%;height:170px;display:block}
+.scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.95rem}
+th,td{text-align:left;padding:9px 6px;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-weight:500}
+.w{color:var(--win)}.l{color:var(--pink)}
+.x{background:none;color:var(--muted);padding:2px 9px;border:1px solid var(--line)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a href="../../">Back to portfolio</a>
+<h1>Pip Journal</h1>
+<p class="sub">Log each trade in R (your risk unit). Win rate, average R and the equity curve update instantly. Your data stays in this browser.</p>
+
+<form class="panel" id="f">
+  <label>Pair<input name="pair" value="EURUSD" required maxlength="10"></label>
+  <label>Side<select name="side"><option>Long</option><option>Short</option></select></label>
+  <label>Result in R<input name="r" type="number" step="0.1" required placeholder="2 or -1"></label>
+  <label>Note<input name="note" maxlength="40" placeholder="optional"></label>
+  <button>Add trade</button>
+</form>
+
+<section class="panel stats" id="stats"></section>
+<section class="panel"><svg id="chart" viewBox="0 0 600 170" preserveAspectRatio="none" role="img" aria-label="Equity curve in R"></svg></section>
+<section class="panel scroll">
+  <table>
+    <thead><tr><th>#</th><th>Pair</th><th>Side</th><th>R</th><th>Note</th><th></th></tr></thead>
+    <tbody id="rows"></tbody>
+  </table>
+</section>
+</div>
+
+<script>
+const K = 'pipjournal', $ = s => document.querySelector(s);
+const esc = s => s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let t = [];
+try { t = JSON.parse(localStorage.getItem(K)) || []; } catch {}
+const save = () => { try { localStorage.setItem(K, JSON.stringify(t)); } catch {} };
+
+function draw() {
+  const n = t.length, wins = t.filter(x => x.r > 0).length, tot = t.reduce((a, x) => a + x.r, 0);
+  const st = [['Trades', n], ['Win rate', n ? Math.round(wins / n * 100) + '%' : '-'], ['Total R', tot.toFixed(1)], ['Average R', n ? (tot / n).toFixed(2) : '-']];
+  $('#stats').innerHTML = st.map(([a, b]) => `<div class="stat"><b>${b}</b><span>${a}</span></div>`).join('');
+
+  $('#rows').innerHTML = n ? t.map((x, i) =>
+    `<tr><td>${i + 1}</td><td>${esc(x.pair)}</td><td>${x.side}</td><td class="${x.r > 0 ? 'w' : 'l'}">${x.r > 0 ? '+' : ''}${x.r}</td><td>${esc(x.note)}</td><td><button class="x" data-i="${i}" aria-label="Delete trade ${i + 1}">x</button></td></tr>`
+  ).join('') : '<tr><td colspan="6">No trades yet. Add your first one above.</td></tr>';
+
+  const cum = [0]; t.forEach(x => cum.push(cum[cum.length - 1] + x.r));
+  const lo = Math.min(...cum), hi = Math.max(...cum), span = hi - lo || 1;
+  const Y = v => 155 - (v - lo) / span * 140;
+  if (n < 1) { $('#chart').innerHTML = '<text x="300" y="90" fill="#a09ecb" text-anchor="middle" font-size="14">Your equity curve appears here</text>'; return; }
+  const pts = cum.map((v, i) => `${i / (cum.length - 1) * 600},${Y(v)}`).join(' ');
+  $('#chart').innerHTML = `<line x1="0" x2="600" y1="${Y(0)}" y2="${Y(0)}" stroke="#a09ecb" stroke-opacity=".4" stroke-dasharray="4 6" vector-effect="non-scaling-stroke"/><polyline points="${pts}" fill="none" stroke="#35f0ff" stroke-width="2.5" stroke-linejoin="round" vector-effect="non-scaling-stroke" style="filter:drop-shadow(0 0 6px #35f0ff)"/>`;
+}
+
+$('#f').addEventListener('submit', e => {
+  e.preventDefault();
+  const d = new FormData(e.target);
+  t.push({ pair: d.get('pair').toUpperCase(), side: d.get('side'), r: parseFloat(d.get('r')), note: d.get('note') });
+  save(); draw(); e.target.r.value = ''; e.target.note.value = ''; e.target.r.focus();
+});
+$('#rows').addEventListener('click', e => {
+  const i = e.target.dataset.i; if (i === undefined) return;
+  t.splice(+i, 1); save(); draw();
+});
+draw();
+</script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Throttle Club | Concept by Abdullah Shah</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&family=Unbounded:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../demo.css">
+</head>
+<body>
+<div class="wrap">
+<a href="../../">Back to portfolio</a>
+<h1>Throttle Club</h1>
+<p class="sub">A concept page for a weekend bike club: see when the next ride leaves, filter routes, join with one tap and make your rider badge.</p>
+
+<section class="panel"><h2>Next ride leaves in</h2><p class="tot" id="cd" style="justify-content:flex-start;font-size:clamp(1.3rem,5vw,2.4rem);color:var(--cyan)"></p><p class="sub" style="margin:8px 0 0">Every Saturday, 6:00 AM sharp.</p></section>
+<section class="panel"><h2>Routes</h2><div class="chips" id="chips"></div><div class="grid" id="rides"></div></section>
+<section class="panel">
+  <h2>Make your rider badge</h2>
+  <form id="f" novalidate>
+    <label>Name<input name="n" autocomplete="name"></label>
+    <label>Bike<select name="b"><option>Sport bike</option><option>Cruiser</option><option>Adventure bike</option><option>Commuter</option><option>Scooter</option></select></label>
+    <label>Level<select name="l"><option>Easy</option><option>Medium</option><option>Hard</option></select></label>
+    <button class="btn">Create badge</button>
+  </form>
+  <p class="msg" id="msg" role="status"></p>
+  <div id="badge"></div>
+</section>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+const R = [['Sunrise Loop','Easy',45,12,5],['Canal Road Cruise','Easy',60,15,9],['Hill Climb Run','Medium',90,10,6],['Night Highway Sprint','Hard',150,8,5]];
+const levels = ['All', 'Easy', 'Medium', 'Hard'];
+let lv = 'All', mine = [];
+try { mine = JSON.parse(localStorage.getItem('tc')) || []; } catch {}
+
+function rides() {
+  $('#chips').innerHTML = levels.map(l => `<button class="chip" aria-pressed="${l === lv}" data-l="${l}">${l}</button>`).join('');
+  $('#rides').innerHTML = R.filter(r => lv === 'All' || r[1] === lv).map(r => {
+    const on = mine.includes(r[0]), left = r[3] - r[4] - (on ? 1 : 0);
+    return `<div class="item"><h3>${r[0]}</h3><p>${r[1]} level, ${r[2]} km</p><p>${left} of ${r[3]} spots left</p><div class="row"><span></span><button class="btn ${on ? 'alt' : ''}" data-r="${r[0]}" ${left < 1 && !on ? 'disabled' : ''}>${on ? 'Leave ride' : 'Join ride'}</button></div></div>`;
+  }).join('');
+}
+document.addEventListener('click', e => {
+  const d = e.target.dataset;
+  if (d.l) { lv = d.l; rides(); }
+  if (d.r) {
+    mine = mine.includes(d.r) ? mine.filter(x => x !== d.r) : [...mine, d.r];
+    try { localStorage.setItem('tc', JSON.stringify(mine)); } catch {}
+    rides();
+  }
+});
+
+function tick() {
+  const now = new Date(), t = new Date(now);
+  t.setDate(now.getDate() + (6 - now.getDay() + 7) % 7); t.setHours(6, 0, 0, 0);
+  if (t <= now) t.setDate(t.getDate() + 7);
+  let s = Math.floor((t - now) / 1000);
+  const d = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600), m = Math.floor(s % 3600 / 60);
+  $('#cd').textContent = `${d}d ${h}h ${m}m ${s % 60}s`;
+}
+tick(); setInterval(tick, 1000);
+
+const f = $('#f');
+f.addEventListener('submit', e => {
+  e.preventDefault();
+  const n = f.n.value.trim(), m = $('#msg'), b = $('#badge');
+  if (n.length < 2) { m.style.color = 'var(--ember)'; m.textContent = 'Please enter your name.'; b.innerHTML = ''; return; }
+  m.style.color = 'var(--ok)'; m.textContent = 'Welcome to the crew!';
+  b.innerHTML = '<div class="badge"><span></span><b></b><p></p></div>';
+  b.querySelector('span').textContent = 'Throttle Club rider';
+  b.querySelector('b').textContent = n;
+  b.querySelector('p').textContent = `${f.b.value}, ${f.l.value} level`;
+});
+rides();
+</script>
+</body>
+</html>

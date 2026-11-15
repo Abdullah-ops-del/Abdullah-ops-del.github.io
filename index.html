@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Abdullah Shah | Web Developer</title>
+<meta property="og:title" content="Abdullah Shah | Web Developer">
+<meta property="og:description" content="Fast, sharp websites with HTML, CSS, JavaScript and WordPress.">
+<meta name="description" content="Abdullah Shah builds fast, good-looking websites with HTML, CSS, JavaScript and WordPress.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐱</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&family=Unbounded:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<canvas id="rain" aria-hidden="true"></canvas>
+<div class="glow" aria-hidden="true"></div>
+
+<header class="nav">
+  <a class="brand" href="#top">old_cat</a>
+  <nav><a href="#about">About</a><a href="#work">Work</a><a href="#skills">Skills</a><a href="#contact">Contact</a></nav>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="intro">
+      <div class="avatar"><img src="photo.jpg" alt="Portrait of Abdullah Shah" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'AS'}))"></div>
+      <p class="status"><i></i>Open for new projects</p>
+      <h1>Abdullah Shah</h1>
+      <p class="role">I build fast, sharp websites with HTML, CSS, JavaScript and WordPress. Hand-coded, mobile-ready, and made to make your business look serious.</p>
+      <div class="cta">
+        <a class="btn primary" href="#work">See my work</a>
+        <a class="btn" href="mailto:abdullahshahtkd123@gmail.com?subject=Project%20inquiry">Hire me</a>
+      </div>
+    </div>
+    <div class="term" id="term" aria-label="Interactive terminal">
+      <div class="bar"><b></b><b></b><b></b><span>abdullah@portfolio: ~</span></div>
+      <div class="out" id="out" aria-live="polite"></div>
+      <label class="line"><span class="ps">$</span><input id="in" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Type a command and press Enter" placeholder="type help"></label>
+    </div>
+  </section>
+
+  <section id="about" class="sec">
+    <div class="about">
+      <div class="card frame"><img src="photo.jpg" alt="Abdullah Shah leaning on a metal shutter in golden evening light" loading="lazy"></div>
+      <div>
+        <h2>About me</h2>
+        <p>I'm Abdullah, a web developer with about a year and a half of hands-on learning and building. I work in HTML, CSS, JavaScript and WordPress, and I care about sites that load fast, look sharp on a phone and are easy for you to keep updated.</p>
+        <p>My earlier work isn't with me right now, so instead of old screenshots I'm showing three working demo projects you can open and try yourself, with the source in this repo. If you hire me, you get the same approach: I build it, show it working, then refine it with you.</p>
+        <p>Away from the keyboard I trade forex, ride bikes and watch anime, which is where the neon look of this site comes from.</p>
+        <div class="stats">
+          <div><b data-n="1.5" data-d="1">0</b><span>years learning and building</span></div>
+          <div><b data-n="3">0</b><span>working demo projects</span></div>
+          <div><b data-n="4">0</b><span>core tools</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="work" class="sec">
+    <h2>Projects</h2>
+    <p class="lead">Working demos you can open and use right now, with the full source in this repo. Two are concept builds, labelled as such.</p>
+    <div class="grid">
+      <a class="card" href="projects/pip-journal/">
+        <h3>Pip Journal</h3>
+        <p>A trade journal in plain JavaScript. Log trades in R, and the win rate, average R and equity curve update instantly. Saves to your browser.</p>
+        <ul class="tags"><li>JavaScript</li><li>HTML</li><li>CSS</li><li>SVG</li></ul>
+      </a>
+      <a class="card" href="projects/ember-oak/">
+        <h3>Ember &amp; Oak Coffee</h3>
+        <p>A concept café site: filter the menu, build an order with a live total, and book a table with form validation.</p>
+        <ul class="tags"><li>JavaScript</li><li>Forms</li><li>Responsive</li></ul>
+      </a>
+      <a class="card" href="projects/throttle-club/">
+        <h3>Throttle Club</h3>
+        <p>A concept page for a bike club: live countdown to the next ride, route filters, one-tap RSVP and a rider badge maker.</p>
+        <ul class="tags"><li>JavaScript</li><li>CSS</li><li>LocalStorage</li></ul>
+      </a>
+    </div>
+  </section>
+
+  <section id="skills" class="sec">
+    <h2>What I work with</h2>
+    <p class="lead">Four tools, used well. Here is what each one means for your project.</p>
+    <dl class="skills">
+      <div><dt>WordPress</dt><dd>Custom themes and plugins, so your team can update the site without calling a developer.</dd></div>
+      <div><dt>HTML</dt><dd>Clean, semantic markup that loads quickly, reads well for search engines and works with screen readers.</dd></div>
+      <div><dt>CSS</dt><dd>Layouts that adapt from phone to widescreen, with animation used where it helps people notice things.</dd></div>
+      <div><dt>JavaScript</dt><dd>Interactive features written by hand: forms, filters, dashboards and tools, with no heavy libraries.</dd></div>
+    </dl>
+  </section>
+
+  <section id="contact" class="sec">
+    <h2>Let's build your site</h2>
+    <p class="lead">Send me a short brief and I'll reply with a plan and a price. Call or WhatsApp works too.</p>
+    <a class="mail" href="mailto:abdullahshahtkd123@gmail.com?subject=Project%20inquiry">abdullahshahtkd123@gmail.com</a>
+    <a class="phone" href="tel:+923355700708">+92 3355700708</a>
+    <div class="cta">
+      <button class="btn primary" id="copy" type="button">Copy email</button>
+      <a class="btn" href="https://wa.me/923355700708" target="_blank" rel="noopener">WhatsApp me</a>
+      <a class="btn" href="https://github.com/Abdullah-ops-del" target="_blank" rel="noopener">View GitHub</a>
+    </div>
+  </section>
+</main>
+
+<footer>© 2026 Abdullah Shah. Hand-coded with HTML, CSS and JavaScript. No frameworks.</footer>
+<script src="script.js"></script>
+</body>
+</html>
