@@ -10,27 +10,6 @@
     glow.style.setProperty('--my', e.clientY + 'px');
   }, { passive: true });
 
-  // Neon rain
-  const cv = $('#rain'), cx = cv.getContext('2d');
-  let W, H, drops = [];
-  const mk = r => ({ x: Math.random() * W, y: r ? Math.random() * H : -30, l: 12 + Math.random() * 26, v: 3 + Math.random() * 5, c: Math.random() < .6 ? '53,240,255' : '255,138,43' });
-  function size() {
-    W = cv.width = innerWidth; H = cv.height = innerHeight;
-    drops = Array.from({ length: Math.min(90, W / 14 | 0) }, () => mk(true));
-  }
-  function tick() {
-    cx.clearRect(0, 0, W, H);
-    for (const d of drops) {
-      cx.strokeStyle = `rgba(${d.c},.35)`;
-      cx.beginPath(); cx.moveTo(d.x, d.y); cx.lineTo(d.x - d.l * .18, d.y + d.l); cx.stroke();
-      d.y += d.v; d.x -= d.v * .18;
-      if (d.y > H) Object.assign(d, mk());
-    }
-    requestAnimationFrame(tick);
-  }
-  size(); addEventListener('resize', size);
-  if (!reduce) tick();
-
   // 3D tilt on project cards
   if (!reduce) document.querySelectorAll('.card').forEach(c => {
     c.addEventListener('pointermove', e => {
